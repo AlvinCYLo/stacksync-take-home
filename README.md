@@ -1,9 +1,8 @@
-Stacksync Take Home
+**Stacksync Take Home**
 
-Test via docker compose up -d 
+Test via `docker compose up -d`
 
 Tested locally via Docker and Postman
-
 Did not put together a test suite due to time constraint. If I were to test:
 
 - execute():
