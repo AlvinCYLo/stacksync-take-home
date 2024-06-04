@@ -36,7 +36,7 @@ def execute_script(script):
             f.write(script)
             f.close()
             
-        command = ['nsjail', '--chroot', '/', '--disable_proc', '--config', 'nsjail.cfg', '--', 'python', '-Su', script_path]
+        command = ['nsjail', '--config', 'nsjail.cfg', '--detect_cgroupv2', '--cgroup_cpu_ms_per_sec', '100', '--', '../usr/local/bin/python', script_path]
         result = subprocess.run(command, capture_output=True, text=True, timeout=5)
         if result.returncode == 0:
             return result.stdout.strip()
@@ -49,7 +49,6 @@ def execute_script(script):
 
 
 def validate_response(resp):
-    print(resp)
     try:
         validated = json.loads(resp)
         return jsonify(validated)
