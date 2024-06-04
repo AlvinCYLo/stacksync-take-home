@@ -1,10 +1,8 @@
 from flask import Flask, request, jsonify
 import json
-from libraries import libraries
+import subprocess
 
 app = Flask(__name__)
-
-#https://github.com/docker/awesome-compose/tree/master/flask
 
 @app.route("/execute", methods=["POST"])
 def execute():
@@ -12,6 +10,7 @@ def execute():
         data = request.json
         script = validate_data(data)
         response = execute_script(script)
+        print(response)
         return validate_response(response)
     except Exception as e:
         print(e)
@@ -30,13 +29,19 @@ def validate_data(data):
         raise Exception("Invalid payload structure", e)
 
 
-#https://www.programiz.com/python-programming/methods/built-in/exec
 def execute_script(script):
-    env = dict([(lib, locals().get(lib, None)) for lib in libraries]) 
+    script_path = 'script.py'
     try:
-        exec(script, {"__builtins__": None}, env)
-        resp = env['main']()
-        return resp
+        with open(script_path, 'w') as f:
+            f.write(script)
+            f.close()
+            
+        command = ['nsjail', '--chroot', '/', '--disable_proc', '--config', 'nsjail.cfg', '--', 'python', '-Su', script_path]
+        result = subprocess.run(command, capture_output=True, text=True, timeout=5)
+        if result.returncode == 0:
+            return result.stdout.strip()
+        else:
+            return result.stderr.strip()
     
     except Exception as e:
         print(e)
@@ -44,6 +49,7 @@ def execute_script(script):
 
 
 def validate_response(resp):
+    print(resp)
     try:
         validated = json.loads(resp)
         return jsonify(validated)

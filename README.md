@@ -1,7 +1,5 @@
 **Stacksync Take Home**
 
-Test via `docker compose up -d`
-
 Tested locally via Docker and Postman
 Did not put together a test suite due to time constraint. If I were to test:
 
@@ -22,3 +20,5 @@ Did not put together a test suite due to time constraint. If I were to test:
 
 - validate_response():
     - invalid json structure response from main() -> exception thrown
+
+https://kruzenshtern.org/writings/2021-05-21-run-python-in-a-sandbox-with-nsjail
